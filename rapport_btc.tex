@@ -34,6 +34,10 @@ Rapport de projet INFRES357
 Le protocole de Bitcoin utilise plusieurs briques de bases de la cryptographie : le chiffrement asymétrique, la signature et le hachage. C'est d'ailleurs là que réside l'intérêt de ce protocole, c'est un assemblage astucieux de briques qui existent depuis de nombreuses années et qui sont très bien connues, pourtant cet assemblage crée une technologie totalement nouvelle.
 
 \subsection{Chiffrement asymétrique}
+Le principe du chiffrement asymétrique est que les clefs vont par paire, une clef publique et une clef privé $(K_{Pub}, K_{Pri})$. Il est possible de chiffrer un message avec la clef privé et alors le message chiffré ne pourra être déchiffré qu'avec la clef publique correspondante. De même on peut chiffrer un message avec la clef publique et alors il ne pourra être déchiffré qu'avec la clef privé correspondante. Considérons l'exemple classique de Bob et Alice, ils possède chacun une paire clef publique/clef privée. La paire de clefs de Bob est 
+$(K_{Pub}^{B}, K_{Pri}^{B})$ et celle d'Alice est $(K_{Pub}^{A}, K_{Pri}^{A})$.\\\\
+Si Bob veut envoyer un message $mess$ à Alice qu'elle seule pourra lire, alors il chiffre son message avec le clef publique d'Alice, et il obtient le message chiffré $*mess*$.
+$$chiffer(mess, K_{Pub}^{A}) \rightarrow *mess*$$
 \subsection{Signature}
 \subsection{Hachage}
 
