@@ -36,8 +36,20 @@ Le protocole de Bitcoin utilise plusieurs briques de bases de la cryptographie :
 \subsection{Chiffrement asymétrique}
 Le principe du chiffrement asymétrique est que les clefs vont par paire, une clef publique et une clef privé $(K_{Pub}, K_{Pri})$. Il est possible de chiffrer un message avec la clef privé et alors le message chiffré ne pourra être déchiffré qu'avec la clef publique correspondante. De même on peut chiffrer un message avec la clef publique et alors il ne pourra être déchiffré qu'avec la clef privé correspondante. Considérons l'exemple classique de Bob et Alice, ils possède chacun une paire clef publique/clef privée. La paire de clefs de Bob est 
 $(K_{Pub}^{B}, K_{Pri}^{B})$ et celle d'Alice est $(K_{Pub}^{A}, K_{Pri}^{A})$.\\\\
-Si Bob veut envoyer un message $mess$ à Alice qu'elle seule pourra lire, alors il chiffre son message avec le clef publique d'Alice, et il obtient le message chiffré $*mess*$.
-$$chiffer(mess, K_{Pub}^{A}) \rightarrow *mess*$$
+
+Si Bob veut envoyer un message $mess$ à Alice qu'elle seule pourra lire, alors il chiffre son message avec le clef publique d'Alice, et il obtient le message chiffré $*mess*$ :
+
+$$chiffrer(mess, ~K_{Pub}^{A}) \rightarrow *mess*$$
+
+Il envoie alors ce message $*mess*$ à Alice, qui quand elle le reçoit le déchiffre avec sa clef privée $K_{Pri}^{A}$ :
+
+$$déchiffrer(*mess*, ~K_{Pri}^{A}) \rightarrow mess$$
+
+Si Alice essayait de déchiffrer le message $*mess*$ avec une autre clef que sa clef privée $K_{Pri}^{A}$ alors cela ne marcherait pas, elle obtiendrait n'importe quoi (une suite de symbole qui n'a rien à voir avec le message $mess$). Donc comme on considère qu'Alice est la seule à connaître sa clef privée, elle est la seule à pouvoir déchiffrer le message.
+
+$$déchiffrer(*mess*, ~K_{Pri}^{autre}) \rightarrow n'importe~quoi$$
+
+
 \subsection{Signature}
 \subsection{Hachage}
 
