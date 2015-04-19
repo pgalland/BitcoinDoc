@@ -217,9 +217,25 @@ Cette fois-ci Eve veut essayer de changer le montant de la transaction, le rempl
 \subsection{La parade au double-spend}
 
 \section{Les différents types de clients}
+\subsection{Découpage des fonctions}
 \subsection{Full clients}
-Full block chain,... Essential to running the network.
+Ce genre de clients implémente la totalité du protocole Bitcoin, et garde en mémoire une copie de la totalité de la \textit{blockchain}. Leurs fonctionnalités peuvent se diviser en deux parties :
+\begin{itemize}
+	\item \textit{publique}\begin{itemize}
+		\item Découvrir d'autres n\oe{}uds et communiquer avec eux
+		\item envoyer et recevoir des transactions et des blocs
+		\item enregistrer tous les blocs valides
+		\item vérifier toutes les transactions reçues et \textit{broadcaster} toutes celles qui sont valides
+	\end{itemize}
+	\item pour l'utilisateur \begin{itemize}
+		\item stocker son historique de transactions et les clefs privées pour le "portefeuille"
+		\item offrir une interface (GUI ou ligne de commande) pour afficher les avoirs et l'historique des transactions, et générer de nouvelles transactions
+	\end{itemize}
+\end{itemize}
+Ces clients renforcent la solidité du réseau et le rendent moins vulnérable aux attaques, mais sont coûteux en termes de mémoire, d'opérations (ils vérifient la validité de transactions qui ne concernent pas l'utilisateur) et de frais liés au réseau (ils reçoivent et émettent des transactions et des blocs en permanence).
 \subsection{Headers-only clients}
+Pour les appareils limités en mémoire, ou selon la volonté de l'utilisateur, un deuxième type de client existe, qui ne garde pas en mémoire toute la \textit{blockchain} mais uniquement les \textit{headers} des blocs (ce qui en mai 2012 représentait 14 Mo, à comparer avec les 2 Go de la totalité de la chaîne). Ils ne téléchargent la totalité d'un bloc que s'ils attendent une transaction, ou s'ils cherchent dans l'ensemble de la chaîne des transactions liées à des clefs qu'ils détiennent.\\\\
+
 Download and store only block headers. Must trust people running full clients.
 Procedure "simple payment verification", also described in the original Bitcoin paper.
 \subsection{Signing-only clients}
