@@ -60,7 +60,19 @@ $$déchiffrer(*mess*, ~K_{Pri}^{autre}) \rightarrow n'importe~quoi$$
 \section{Empêcher le double-spend}
 
 \section{Le minage}
+\section{Les différents types de clients}
+\subsection{Full clients}
+Full block chain,... Essential to running the network.
+\subsection{Headers-only clients}
+Download and store only block headers. Must trust people running full clients.
+Procedure "simple payment verification", also described in the original Bitcoin paper.
+\subsection{Signing-only clients}
+Ne récupère que ce qui le concerne personnellement.
+Il faut un certain niveau de confiance dans le serveur (qui peut nous envoyer de fausses infos, et par exemple nous faire croire qu'on a reçu de l'argent alors que non), mais le serveur ne peut pas nous voler de l'argent (nous faire signer des transactions contre notre volonté) (le client peut être une appli PC, mobile ou web ; pour une appli Web, la signature est faite dans le browser, donc les clefs ne sont pas envoyées).
 
+\subsection{Thin clients}
+Mt.Gox,...
+Le client ne détient pas ses clefs et ne signe pas lui-même ses transactions, il demande à un serveur de faire cela pour lui. En ce sens, c'est exactement la même chose qu'une banque.
 \bibliography{biblio}{}
 \bibliographystyle{plain}
 
