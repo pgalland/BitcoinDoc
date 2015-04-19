@@ -15,6 +15,7 @@
 
 \usepackage[table]{xcolor}
 
+
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}
 \renewcommand{\algorithmicensure}{\textbf{Output:}}
 
@@ -97,10 +98,52 @@ En revanche si un attaquant connaît la clef privée de Bob alors il peut très 
 
 
 
-\subsection{Un paiement Bitcoin}
+\subsection{Une transaction Bitcoin}
 
 \subsubsection{Identité et adresses}
-Dans le protocole Bitcoin la notion d'identité repose sur le chiffrement asymétrique donc un individu est une paire clef publique/clef privée. Sachant que l'on peut générer la clef publique à partir de la clef privée, un individu est une clef privée. On parle ici d'individus dans le protocole, car une personne réelle peut très bien avoir plusieurs clefs privées et donc correspondre à plusieurs individus dans le protocole. C'est d'ailleurs normalement le cas. Chaque personne réelle possédant des bitcoins a au moins une centaine de clefs privées, donc correspond à de nombreux individus théoriques dans le protocole.
+
+Dans le protocole Bitcoin la notion d'identité repose sur le chiffrement asymétrique donc un individu est une paire clef publique/clef privée. Sachant que l'on peut générer la clef publique à partir de la clef privée, un individu est une clef privée. On parle ici d'individus dans le protocole, car une personne réelle peut très bien avoir plusieurs clefs privées et donc correspondre à plusieurs individus dans le protocole. C'est d'ailleurs normalement le cas. Chaque personne réelle possédant des bitcoins a au moins une centaine de clefs privées, donc correspond à de nombreux individus théoriques dans le protocole.\\
+Les individus sont identifiés dans le protocole par leur adresse. Une adresse est un hash de clef publique. Par exemple 3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy est une adresse. Pour vérifier qu'une adresse $addr$ correspond bien à la clef publique $K_{Pub}$ on a juste à vérifier que $h(K_{Pub})~ ==~ addr$ où $h$ est la fonction de hachage définie par le protocole.
+
+\subsubsection{Structure d'une transaction}
+
+Tout d'abord on va considérer qu'il existe un "livre de compte" partagé entre tous les utilisateurs de Bitcoin et que chaque transaction valide est inscrite dans ce livre de compte de manière chronologique. On verra par la suite quel procédé permet l'existence de ce livre de compte, qu'on appelle la Blockchain.\\\\
+Chacun peut donc accéder à l'historique de toutes les transactions valides qui ont été effectuées depuis la création de Bitcoin. Il est important de comprendre qu'il n'existe pas de pièce ou de billet de bitcoin, même virtuels. Il n'y a pas de fichiers qui représentent des bitcoins. C'est seulement la Blockchain (le livre de compte partagé) qui indique le nombre de bitcoins associé à chaque adresse.  Même cette vision n'est pas tout à fait exacte. La Blockchain n'est que l'historique de toutes les transactions valides effectuées. Il est donc plus correct de dire qu'on peut calculer le nombre de bitcoin de chaque adresse à partir de la Blockchain.\\\\
+Prenons un exemple : on suppose que Bob veut envoyer 1 btc à Alice (on utilisera l'abréviation btc pour désigner l'unité de monnaie bitcoin). Bob et Alice ont toujours chacun une clef privée, respectivement $K_{Pri}^{B}$ et $K_{Pri}^{A}$, et ils ont également une adresse bitcoin : $addr_B = h(K_{Pub}^{B})$ et $addr_A = h(K_{Pub}^{A})$.\\\\
+Pour que Bob puisse envoyer 1 btc, il faut qu'il dispose d'au moins 1 btc. Cela signifie qu'il faut qu'il existe dans la Blockchain une transaction qui envoie au moins 1 btc à l'adresse $addr_B$. Supposons que ce soit le cas, il y a dans la Blockchain une transaction $Tx_1$ qui envoie 1 btc à l'adresse  $addr_B$. Bob va donc retransférer vers Alice l'argent qu'il a reçu de $Tx_1$.
+La transaction $Tx$ de Bob contient donc les éléments suivants :\\
+
+
+\begin{figure}[h]
+
+\begin{itemize}
+\renewcommand{\labelitemi}{$\bullet$}
+\renewcommand{\labelitemii}{$\star$}
+
+\item Input
+\begin{itemize}
+\item $h(Tx_1)$
+\item $K_{Pub}^{B}$
+\item[$\bullet$] $signature(K_{Pri}^{B}, Tx^*)$
+\end{itemize}
+
+\item Output
+\begin{itemize}
+\item value : 1 btc
+\item $addr_A$
+\end{itemize}
+
+\end{itemize}
+
+\caption{Transaction Tx}
+\end{figure}
+
+
+Dans la partie Input la transaction indique quelle transaction précédente est utilisée pour récupérer les bitcoins. Ici c'est la transaction $Tx_1$, c'est pour cela que le premier champ est $h(Tx_1)$. La transaction $Tx_1$ 
+
+
+
+
 
 \subsection{Diffuser les paiements}
 
