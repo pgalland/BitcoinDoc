@@ -51,6 +51,7 @@ Si Alice essayait de déchiffrer le message $*mess*$ avec une autre clef que sa 
 
 $$déchiffrer(*mess*, ~K_{Pri}^{autre}) \rightarrow n'importe~quoi$$
 
+On peut également utiliser la paire clef publique/clef privée dans l'autre sens. Si Bob chiffre un message avec sa clef privée $K_{Pri}^{B}$ alors on ne pourra le déchiffrer qu'avec sa clef publique $K_{Pub}^{B}$. En essayant de le déchiffrer avec une autre clef $K_{Pub}^{autre}$ on obtiendrait n'importe quoi.\\\\ Ainsi si Alice veut que Bob prouve qu'il est bien Bob donc qu'il connaît la clef privée $K_{Pri}^{B}$, sans qu'il ait à révéler cette clef, alors elle peut créer un message $mess2$ et demander à Bob de le chiffrer avec sa clef $K_{Pri}^{B}$ et de lui envoyer le résultat $*mess2*$. Alice va ensuite déchiffrer $*mess2*$ avec la clef publique de Bob $K_{Pub}^{B}$ et si elle retombe bien sur $mess2$ cela prouve que Bob est bien Bob (qu'il connaît la clef $K_{Pri}^{B}$). Ce mécanisme sera très utile pour la signature, décrite plus loin.
 \subsection{Hachage cryptographique}
 
 On considère toujours nos messages comme des suites finies de caractères ou de chiffres (d'ailleurs in fine sur un ordinateur toute donnée est une suite finie de chiffres). Le but d'une fonction de hachage cryptographique $h$ est de transformer chaque message de taille inférieure à $T$ (où $T$ est très très grand) en un message de taille beaucoup plus petite que $T$ (par exemple dans Bitcoin en message de longueur 256 chiffres). Si j'ai un message $mess$ assez long alors $h(mess)$ sera beaucoup plus petit que $mess$. On appellera $h(mess)$ le hash de $mess$. \\\\
@@ -65,6 +66,32 @@ Enfin si je considère un message $mess1$ et ma fonction de hachage $h$, il m'es
 Les fonctions de hachage jouent un rôle très important dans le protocol Bitcoin !
 
 \subsection{Signature}
+
+Le but de la signature électronique est de s'assurer que le message que l'on reçoit a bien été envoyé par la personne qui signe, et que le message n'a pas été modifié entre le moment de la signature et sa réception. Reprenons l'exemple de Bob et Alice, avec leurs paires de clefs respectives $(K_{Pub}^{B}, K_{Pri}^{B})$ et $(K_{Pub}^{A}, K_{Pri}^{A})$. Pour qu'Alice puisse être certaine que le message qu'elle reçoit de Bob est bien de lui et qu'il n'a pas été modifié en cours de route il faut que Bob signe son message :\\
+
+Après avoir écrit son message $mess$, Bob calcul son hash $h(mess)$
+
+$$ mess ~ \rightarrow ~ h(mess) $$
+
+Puis il utilise chiffre ce hash avec sa clef privée :
+
+$$ chiffrer(h(mess),~ K_{Pri}^{B}) \rightarrow ~ *h(mess)* $$
+
+Ce $*h(mess)*$ constitue la signature du message. Bob envoie à Alice le message avec sa signature : $ (mess, ~*h(mess)*)$. Lorsque Alice reçoit le message et la signature elle vérifie que la signature est valide et qu'elle provient bien de Bob.\\\\
+
+Alice reçoit donc $(mess1,  ~*h(mess)*)$, on écrit $mess1$ car pour le moment on ne sait pas s'il s'agit bien du message original de Bob (il a peut-être été modifié par quelqu'un l'ayant intercepté). Alice calcule le hash de $mess1$ :
+
+$$ mess1 ~ \rightarrow ~ h(mess1) $$
+
+Puis elle déchiffre $*h(mess)*$ avec la clef publique de Bob. En le déchiffrant avec la clef publique de Bob $K_{Pub}^{B} $ elle s'assure que $*h(mess)*$ a bien été chiffré avec la clef privé de Bob $K_{Pri}^{B} $. En effet s'il avait été chiffré avec une autre clef privée alors en le déchiffrant avec $K_{Pub}^{B}$ on obtiendrait n'importe quoi. Comme à priori on n'est pas encore sûr que le $*h(mess)*$ que l'on déchiffre a bien été chiffré avec la clef privée de Bob, on note $?h(mess)?$ ce que l'on obtient :
+
+$$ déchiffrer(*h(mess)*,~ K_{Pub}^{B})~ \rightarrow ~?h(mess)? $$
+
+Enfin on compare $h(mess1)$ et $?h(mess)?$, s'ils sont égaux alors on est sûr (modulo la solidité de la fonction de hachage et de l'algorithme de chiffrement) que le message est bien de Bob et qu'il n'a pas été modifié, s'ils sont différents alors on ne peut pas faire confiance à ce message.\\\\
+On peut se convaincre que c'est la cas en reprenant le processus et en imaginant qu'un attaquant modifie le message et/ou la signature en cours de route, ou qu'il essaie d'envoyer le message avec sa paire de clefs. On verra qu'à la fin le test que fait Alice donne bien $h(mess1) ~\neq~ ?h(mess)?$ (en gardant à l'esprit qu'Alice connaît la clef publique de Bob).\\
+En revanche si un attaquant connaît la clef privée de Bob alors il peut très bien se faire passer pour lui !
+
+
 
 \section{Un paiement Bitcoin}
 
