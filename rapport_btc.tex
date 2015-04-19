@@ -11,6 +11,7 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{amssymb}
+\usepackage{url}
 
 \usepackage[table]{xcolor}
 
@@ -27,7 +28,8 @@ Rapport de projet INFRES357
 \maketitle
 
 \tableofcontents
-
+ \nocite{*}
+ 
 \newpage
 
 \section{Le protocole Bitcoin}
@@ -97,6 +99,8 @@ En revanche si un attaquant connaît la clef privée de Bob alors il peut très 
 
 \subsection{Un paiement Bitcoin}
 
+\subsubsection{Identité et adresses}
+Dans le protocole Bitcoin la notion d'identité repose sur le chiffrement asymétrique donc un individu est une paire clef publique/clef privée. Sachant que l'on peut générer la clef publique à partir de la clef privée, un individu est une clef privée. On parle ici d'individus dans le protocole, car une personne réelle peut très bien avoir plusieurs clefs privées et donc correspondre à plusieurs individus dans le protocole. C'est d'ailleurs normalement le cas. Chaque personne réelle possédant des bitcoins a au moins une centaine de clefs privées, donc correspond à de nombreux individus théoriques dans le protocole.
 
 \subsection{Diffuser les paiements}
 
