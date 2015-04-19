@@ -219,6 +219,10 @@ Cette fois-ci Eve veut essayer de changer le montant de la transaction, le rempl
 \section{Les différents types de clients}
 \subsection{Découpage des fonctions}
 \subsection{Full clients}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=10cm]{en-wallets-full-service}
+\end{figure}
 Ce genre de clients implémente la totalité du protocole Bitcoin, et garde en mémoire une copie de la totalité de la \textit{blockchain}. Leurs fonctionnalités peuvent se diviser en deux parties :
 \begin{itemize}
 	\item \textit{publique}\begin{itemize}
@@ -240,6 +244,7 @@ On voit que tout repose sur la confiance que le client léger accorde au n\oe{}u
 L'attaque principale liée à cette question de confiance (appelée \textit{Sybil attack}) a lieu si l'attaquant a la possibilité de contrôler entièrement notre connexion à Internet, et ainsi de nous présenter un faux réseau dans lequel tous les n\oe{}uds acceptent cette transaction pour nous faire croire qu'elle est valide, puis d'ajouter des blocs pour finir par nous faire croire qu'elle est définitive. Pour contrecarrer cela, il est envisagé de mettre en place des clients qui mesurent la vitesse à laquelle de nouveaux blocs sont minés : en effet, dans le cas où l'attaquant n'est pas dans une configuration de puissance de type 51\%, cette vitesse décroîtrait brutalement avec l'usurpation, et le client pourrait ainsi signaler à l'utilisateur que la situation est douteuse.
 \subsection{Signing-only clients}
 \begin{figure}[h]
+	\centering
 	\includegraphics[width=10cm]{en-wallets-signing-only}
 \end{figure}
 Les \textit{signing-only clients} vont encore une étape plus loin dans la délégation de compétence : le client ne télécharge pas la blockchain, ni même les headers. Il se base sur un autre client pour lui fournir les transactions qui concernent l'utilisateur et la situation financière de ce dernier, et ne garde en propre que la partie signature. Ce cas de figure a deux fonctions principales :\begin{itemize}
