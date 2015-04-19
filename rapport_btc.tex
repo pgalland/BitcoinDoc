@@ -115,7 +115,6 @@ La transaction $Tx$ de Bob contient donc les éléments suivants :\\
 
 
 \begin{figure}[h]
-
 \begin{itemize}
 \renewcommand{\labelitemi}{$\bullet$}
 \renewcommand{\labelitemii}{$\star$}
@@ -135,15 +134,52 @@ La transaction $Tx$ de Bob contient donc les éléments suivants :\\
 
 \end{itemize}
 
-\caption{Transaction Tx}
+\caption{Transaction $Tx'$}
 \end{figure}
 
+\noindent La transaction contient donc 5 champs :\\\\
+Dans la partie Input la transaction indique quelle transaction précédente est utilisée pour récupérer les bitcoins. Ici c'est la transaction $Tx_1$, c'est pour cela que le premier champ est $h(Tx_1)$. Le deuxième champ est la clef publique de Bob. En effet Bob veut utiliser les bitcoins donnés à $addr_B$ par $Tx_1$, il doit donc prouver qu'il possède bien l'adresse $addr_B$. Pour cela il fournit 
+$K_{Pub}^{B}$ et $signature(K_{Pri}^{B}, Tx^*)$. On peut donc vérifier d'une part que $h(K_{Pub}^{B}) == addr_B$, donc que l'adresse $addr_B$ correspond bien à la clef $K_{Pub}^{B}$, et d'autre part que $signature(K_{Pri}^{B}, Tx^*)$ est valide, donc que celui qui émet le message possède bien la clef privée $K_{Pri}^{B}$. Ce qui est signé est $Tx^*$ c'est à dire la transaction $Tx$ sans la signature (les éléments précédés d'une étoile sur la figure).\\\\
+Dans la partie Output Bob indique qu'il souhaite donner 1 btc (champ value) à l'adresse $addr_A$, soit à Alice.
 
-Dans la partie Input la transaction indique quelle transaction précédente est utilisée pour récupérer les bitcoins. Ici c'est la transaction $Tx_1$, c'est pour cela que le premier champ est $h(Tx_1)$. La transaction $Tx_1$ 
+\subsubsection{Sécurité de la transaction}
 
+Une fois que Bob a écrit sa transaction, il la diffuse sur le réseau Bitoin afin qu'elle soit intégrée dans la blockchain et devienne ainsi une transaction valide, faisant partie de l'historique des transactions Bitcoin. Nous verrons par la suite que le réseau Bitcoin est un réseau peer-to-peer, donc lorsque Bob diffuse sa transaction, n'importe qui peut y avoir accès. La transaction est diffusée en clair sur le réseau.\\\\
+Cependant pour pouvoir être intégrée dans la blockchain une transaction doit être valide. Tous les champs seront vérifiés, il sera également vérifié que l'output de la transaction précédente ($Tx_1$ dans notre exemple) est bien dirigé vers l'adresse émettrice de la nouvelle transaction 
+($addr_B=h(K_{Pub}^{B})$ dans notre exemple), et qu'il est suffisant (supérieur à 1 btc dans notre exemple).
+\\\\
+Il est donc primordial que si un attaquant entre en possession de la transaction il ne puisse pas la modifier afin par exemple de s'attribuer les fonds plutôt qu'à Alice, ou de changer le montant de la transaction, etc. Explorons quelques tentatives d'attaques et les raisons pour lesquelles elles échouent :
 
+\paragraph{Changer le destinataire d'une transaction\\\\}
 
+Imaginons le scénario suivant : Bob a créé sa transaction, il la diffuse sur le réseau, en particulier Eve obtient une copie de la transaction. Eve veut essayer de modifier la transaction pour s'attribuer le 1 btc que Bob envoie à Alice, puis rediffuser cette nouvelle transaction modifiée sur le réseau, en espérant qu'elle soit intégrée dans la blockchain. Eve possède l'adresse $addr_E$ et la clef privée 
+$K^E_{Pri}$.\\\\
+Eve fait un premier essai, elle crée la transaction $Tx'$ en remplaçant l'adresse $addr_A$ par son adresse $addr_E$ dans l'output :
 
+\begin{figure}[h]
+\begin{itemize}
+\renewcommand{\labelitemi}{$\bullet$}
+\renewcommand{\labelitemii}{$\star$}
+
+\item Input
+\begin{itemize}
+\item $h(Tx_1)$
+\item $K_{Pub}^{B}$
+\item[$\bullet$] $signature(K_{Pri}^{B}, Tx^*)$
+\end{itemize}
+
+\item Output
+\begin{itemize}
+\item value : 1 btc
+\item $addr_E$
+\end{itemize}
+
+\end{itemize}
+
+\caption{Transaction $Tx'$}
+\end{figure}
+
+Mais comme la signature $signature(K_{Pri}^{B}, Tx^*)$ est faite sur $Tx^*$ et que Eve a changé un champ faisant partie de $Tx^*$, la signature n'est plus valide. Par conséquent cette transaction ne pourra jamais être acceptée dans la blockchain. Dans un deuxième essai, Eve décide donc de changer la signature. Cependant comme elle ne connaît pas 
 
 \subsection{Diffuser les paiements}
 
