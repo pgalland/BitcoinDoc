@@ -114,7 +114,7 @@ Pour que Bob puisse envoyer 1 btc, il faut qu'il dispose d'au moins 1 btc. Cela 
 La transaction $Tx$ de Bob contient donc les éléments suivants :\\
 
 
-\begin{figure}[h]
+\begin{figure}[H]
 \begin{itemize}
 \renewcommand{\labelitemi}{$\bullet$}
 \renewcommand{\labelitemii}{$\star$}
@@ -144,19 +144,19 @@ Dans la partie Output Bob indique qu'il souhaite donner 1 btc (champ value) à l
 
 \subsubsection{Sécurité de la transaction}
 
-Une fois que Bob a écrit sa transaction, il la diffuse sur le réseau Bitoin afin qu'elle soit intégrée dans la blockchain et devienne ainsi une transaction valide, faisant partie de l'historique des transactions Bitcoin. Nous verrons par la suite que le réseau Bitcoin est un réseau peer-to-peer, donc lorsque Bob diffuse sa transaction, n'importe qui peut y avoir accès. La transaction est diffusée en clair sur le réseau.\\\\
-Cependant pour pouvoir être intégrée dans la blockchain une transaction doit être valide. Tous les champs seront vérifiés, il sera également vérifié que l'output de la transaction précédente ($Tx_1$ dans notre exemple) est bien dirigé vers l'adresse émettrice de la nouvelle transaction 
+Une fois que Bob a écrit sa transaction, il la diffuse sur le réseau Bitoin afin qu'elle soit intégrée dans la Blockchain et devienne ainsi une transaction valide, faisant partie de l'historique des transactions Bitcoin. Nous verrons par la suite que le réseau Bitcoin est un réseau peer-to-peer, donc lorsque Bob diffuse sa transaction, n'importe qui peut y avoir accès. La transaction est diffusée en clair sur le réseau.\\\\
+Cependant pour pouvoir être intégrée dans la Blockchain une transaction doit être valide. Tous les champs seront vérifiés, il sera également vérifié que l'output de la transaction précédente ($Tx_1$ dans notre exemple) est bien dirigé vers l'adresse émettrice de la nouvelle transaction 
 ($addr_B=h(K_{Pub}^{B})$ dans notre exemple), et qu'il est suffisant (supérieur à 1 btc dans notre exemple).
 \\\\
 Il est donc primordial que si un attaquant entre en possession de la transaction il ne puisse pas la modifier afin par exemple de s'attribuer les fonds plutôt qu'à Alice, ou de changer le montant de la transaction, etc. Explorons quelques tentatives d'attaques et les raisons pour lesquelles elles échouent :
 
 \paragraph{Changer le destinataire d'une transaction\\\\}
 
-Imaginons le scénario suivant : Bob a créé sa transaction, il la diffuse sur le réseau, en particulier Eve obtient une copie de la transaction. Eve veut essayer de modifier la transaction pour s'attribuer le 1 btc que Bob envoie à Alice, puis rediffuser cette nouvelle transaction modifiée sur le réseau, en espérant qu'elle soit intégrée dans la blockchain. Eve possède l'adresse $addr_E$ et la clef privée 
+Imaginons le scénario suivant : Bob a créé sa transaction, il la diffuse sur le réseau, en particulier Eve obtient une copie de la transaction. Eve veut essayer de modifier la transaction pour s'attribuer le 1 btc que Bob envoie à Alice, puis rediffuser cette nouvelle transaction modifiée sur le réseau, en espérant qu'elle soit intégrée dans la Blockchain. Eve possède l'adresse $addr_E$ et la clef privée 
 $K^E_{Pri}$.\\\\
 Eve fait un premier essai, elle crée la transaction $Tx'$ en remplaçant l'adresse $addr_A$ par son adresse $addr_E$ dans l'output :
 
-\begin{figure}[h]
+\begin{figure}[H]
 \begin{itemize}
 \renewcommand{\labelitemi}{$\bullet$}
 \renewcommand{\labelitemii}{$\star$}
@@ -179,13 +179,41 @@ Eve fait un premier essai, elle crée la transaction $Tx'$ en remplaçant l'adre
 \caption{Transaction $Tx'$}
 \end{figure}
 
-Mais comme la signature $signature(K_{Pri}^{B}, Tx^*)$ est faite sur $Tx^*$ et que Eve a changé un champ faisant partie de $Tx^*$, la signature n'est plus valide. Par conséquent cette transaction ne pourra jamais être acceptée dans la blockchain. Dans un deuxième essai, Eve décide donc de changer la signature. Cependant comme elle ne connaît pas 
+Mais comme la signature $signature(K_{Pri}^{B}, Tx^*)$ est faite sur $Tx^*$ et que Eve a changé un champs faisant partie de $Tx^*$, la signature n'est plus valide. Par conséquent cette transaction ne pourra jamais être acceptée dans la Blockchain. Dans un deuxième essai, Eve décide donc de changer la signature. Cependant comme elle ne connaît pas la clef privée de Bob, elle ne peut pas signer avec. Elle décide donc de signer avec sa clef privée $K^E_{Pri}$, mais à ce moment là elle doit aussi changer le deuxième champs qui contient $K^B_{Pub}$ sinon la signature sera reconnue comme invalide. Elle va donc remplacer $K^B_{Pub}$ par sa clef publique. Elle crée ainsi une transaction $Tx''$
 
-\subsection{Diffuser les paiements}
+\begin{figure}[H]
+\begin{itemize}
+\renewcommand{\labelitemi}{$\bullet$}
+\renewcommand{\labelitemii}{$\star$}
 
-\subsection{Empêcher le double-spend}
+\item Input
+\begin{itemize}
+\item $h(Tx_1)$
+\item $K_{Pub}^{E}$
+\item[$\bullet$] $signature(K_{Pri}^{E}, Tx''^*)$
+\end{itemize}
 
-\subsection{Le minage}
+\item Output
+\begin{itemize}
+\item value : 1 btc
+\item $addr_E$
+\end{itemize}
+
+\end{itemize}
+
+\caption{Transaction $Tx''$}
+\end{figure}
+
+Cette fois-ci la signature dans $Tx''$ est valide, car Eve a signé sur 
+$Tx''^*$. Cependant il subsiste un problème et la transaction ne sera pas acceptée par la Blockchain. En effet cette transaction veut utiliser les fonds fournis à l'adresse $addr_B$ par la transaction $Tx_1$, or il va être vérifié que c'est bien la clef publique derrière $addr_B$ qui utilise ces fonds. On vérifiera donc que $h(K_{Pub}^{E}) ~==~ addr_B$ ce qui n'est pas le cas. Si Eve laissait la clef $K_{Pub}^{B}$ dans le deuxième champs alors c'est la signature qui serait invalide cette fois, puisqu'elle n'est pas faite avec la clef privée correspondant à $K_{Pub}^{B}$. Eve est donc bloquée, elle ne peut pas détourner la transaction de Bob !
+
+\paragraph{Changer le montant d'une transaction\\\\}
+
+Cette fois-ci Eve veut essayer de changer le montant de la transaction, le remplacer par 0.5 btc par exemple. Mais cette attaque échouera également car le champs value fait parti de $Tx^*$ et est donc signé avec $K_{Pub}^B$, on ne peut pas le changer sans rendre la signature invalide. Or on a vu dans l'exemple précédent que l'on ne peut pas changer la signature. Cette attaque échoue donc également.
+
+\subsection{Blockchain et mineurs}
+
+\subsection{La parade au double-spend}
 
 \bibliography{biblio}{}
 \bibliographystyle{plain}
