@@ -30,11 +30,13 @@ Rapport de projet INFRES357
 
 \newpage
 
-\section{Briques de base}
+\section{Le protocole Bitcoin}
+
+\subsection{Briques de base}
 
 Le protocole de Bitcoin utilise plusieurs briques de bases de la cryptographie : le chiffrement asymétrique, la signature et le hachage. C'est d'ailleurs là que réside l'intérêt de ce protocole, c'est un assemblage astucieux de briques qui existent depuis de nombreuses années et qui sont très bien connues, pourtant cet assemblage crée une technologie totalement nouvelle.
 
-\subsection{Chiffrement asymétrique}
+\subsubsection{Chiffrement asymétrique}
 
 Le principe du chiffrement asymétrique est que les clefs vont par paire, une clef publique et une clef privé $(K_{Pub}, K_{Pri})$. On peut voir les clefs comme des suites finies de caractères ou de chiffres, et les message aussi. Il est possible de chiffrer un message avec la clef privé et alors le message chiffré ne pourra être déchiffré qu'avec la clef publique correspondante. De même on peut chiffrer un message avec la clef publique et alors il ne pourra être déchiffré qu'avec la clef privé correspondante. Considérons l'exemple classique de Bob et Alice, ils possède chacun une paire clef publique/clef privée. La paire de clefs de Bob est 
 $(K_{Pub}^{B}, K_{Pri}^{B})$ et celle d'Alice est $(K_{Pub}^{A}, K_{Pri}^{A})$.\\\\
@@ -52,7 +54,7 @@ Si Alice essayait de déchiffrer le message $*mess*$ avec une autre clef que sa 
 $$déchiffrer(*mess*, ~K_{Pri}^{autre}) \rightarrow n'importe~quoi$$
 
 On peut également utiliser la paire clef publique/clef privée dans l'autre sens. Si Bob chiffre un message avec sa clef privée $K_{Pri}^{B}$ alors on ne pourra le déchiffrer qu'avec sa clef publique $K_{Pub}^{B}$. En essayant de le déchiffrer avec une autre clef $K_{Pub}^{autre}$ on obtiendrait n'importe quoi.\\\\ Ainsi si Alice veut que Bob prouve qu'il est bien Bob donc qu'il connaît la clef privée $K_{Pri}^{B}$, sans qu'il ait à révéler cette clef, alors elle peut créer un message $mess2$ et demander à Bob de le chiffrer avec sa clef $K_{Pri}^{B}$ et de lui envoyer le résultat $*mess2*$. Alice va ensuite déchiffrer $*mess2*$ avec la clef publique de Bob $K_{Pub}^{B}$ et si elle retombe bien sur $mess2$ cela prouve que Bob est bien Bob (qu'il connaît la clef $K_{Pri}^{B}$). Ce mécanisme sera très utile pour la signature, décrite plus loin.
-\subsection{Hachage cryptographique}
+\subsubsection{Hachage cryptographique}
 
 On considère toujours nos messages comme des suites finies de caractères ou de chiffres (d'ailleurs in fine sur un ordinateur toute donnée est une suite finie de chiffres). Le but d'une fonction de hachage cryptographique $h$ est de transformer chaque message de taille inférieure à $T$ (où $T$ est très très grand) en un message de taille beaucoup plus petite que $T$ (par exemple dans Bitcoin en message de longueur 256 chiffres). Si j'ai un message $mess$ assez long alors $h(mess)$ sera beaucoup plus petit que $mess$. On appellera $h(mess)$ le hash de $mess$. \\\\
 Prenons un exemple avec la fonction de hachage SHA-256, qui est utilisée dans Bitcoin. Je considère le message $mess$ suivant et je calcule son $h(mess)$ : 
@@ -65,7 +67,7 @@ $$ h~ et ~h(mess) \nrightarrow mess$$
 Enfin si je considère un message $mess1$ et ma fonction de hachage $h$, il m'est impossible (une fois encore cela demande trop de puissance de calcul) de trouver un message $mess2$ tel que $h(mess1) ~=~ h(mess2)$.\\\\
 Les fonctions de hachage jouent un rôle très important dans le protocol Bitcoin !
 
-\subsection{Signature}
+\subsubsection{Signature}
 
 Le but de la signature électronique est de s'assurer que le message que l'on reçoit a bien été envoyé par la personne qui signe, et que le message n'a pas été modifié entre le moment de la signature et sa réception. Reprenons l'exemple de Bob et Alice, avec leurs paires de clefs respectives $(K_{Pub}^{B}, K_{Pri}^{B})$ et $(K_{Pub}^{A}, K_{Pri}^{A})$. Pour qu'Alice puisse être certaine que le message qu'elle reçoit de Bob est bien de lui et qu'il n'a pas été modifié en cours de route il faut que Bob signe son message :\\
 
@@ -93,13 +95,14 @@ En revanche si un attaquant connaît la clef privée de Bob alors il peut très 
 
 
 
-\section{Un paiement Bitcoin}
+\subsection{Un paiement Bitcoin}
 
-\section{Diffuser les paiements}
 
-\section{Empêcher le double-spend}
+\subsection{Diffuser les paiements}
 
-\section{Le minage}
+\subsection{Empêcher le double-spend}
+
+\subsection{Le minage}
 
 \bibliography{biblio}{}
 \bibliographystyle{plain}
