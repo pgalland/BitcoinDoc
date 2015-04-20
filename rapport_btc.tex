@@ -218,6 +218,13 @@ Cette fois-ci Eve veut essayer de changer le montant de la transaction, le rempl
 
 \section{Les différents types de clients}
 \subsection{Découpage des fonctions}
+Avec ce qu'on a vu auparavant, on peut déclarer que le protocole Bitcoin est sûr pourvu que :\begin{itemize}
+	\item les clefs secrètes restent secrètes
+	\item on a accès au consensus atteint par le réseau, c'est-à-dire à la \textit{blockchain}
+\end{itemize}
+Ces deux conditions sont malheureusement assez antagonistes : l'accès à la \textit{blockchain} suppose une connectivité avec l'extérieur, ce qui est nécessairement un facteur de risque pour la sécurité des clefs.\\\\
+Cependant, l'architecture de Bitcoin rend possible de séparer les différentes fonctions d'un portefeuille, et en particulier d'isoler la partie signature. De façon intéressante, cette séparation peut même se faire entre différents acteurs, le détenteur d'une adresse délégant une partie de l'ensemble des fonctions d'un portefeuille Bitcoin à une autre entité.\\\\
+Dans cette section, nous exposons les différents types de clients Bitcoin qui existent à ce jour (en nous référant à des implémentations existantes) et proposons une première analyse de leurs avantages (en termes de simplicité ou de légèreté) et des changements, en bien ou en mal, qu'ils induisent en termes de sécurité.
 \subsection{Full clients}
 \begin{figure}[h]
 	\centering
@@ -236,7 +243,8 @@ Ce genre de clients implémente la totalité du protocole Bitcoin, et garde en m
 		\item offrir une interface (GUI ou ligne de commande) pour afficher les avoirs et l'historique des transactions, et générer de nouvelles transactions
 	\end{itemize}
 \end{itemize}
-Ces clients renforcent la solidité du réseau et le rendent moins vulnérable aux attaques, mais sont coûteux en termes de mémoire, d'opérations (ils vérifient la validité de transactions qui ne concernent pas l'utilisateur) et de frais liés au réseau (ils reçoivent et émettent des transactions et des blocs en permanence).
+Ces clients renforcent la solidité du réseau et le rendent moins vulnérable aux attaques, mais sont coûteux en termes de mémoire, d'opérations (ils vérifient la validité de transactions qui ne concernent pas l'utilisateur) et de frais liés au réseau (ils reçoivent et émettent des transactions et des blocs en permanence).\\\\
+En termes de sécurité, l'appareil sur lequel le client est implémenté étant connecté à l'extérieur (et échangeant de plus un volume considérable d'informations), une première mesure évidente est de chiffrer le dossier contenant les clefs privées.
 \subsection{Headers-only clients}
 Pour les appareils limités en mémoire, ou selon la volonté de l'utilisateur, un deuxième type de client existe, qui ne garde pas en mémoire toute la \textit{blockchain} mais uniquement les \textit{headers} des blocs (ce qui en mai 2012 représentait 14 Mo, à comparer avec les 2 Go de la totalité de la chaîne). Ils ne téléchargent la totalité d'un bloc que s'ils attendent une transaction, ou s'ils cherchent dans l'ensemble de la chaîne des transactions liées à des clefs qu'ils détiennent. Pour vérifier la validité d'une transaction les concernant, les n\oe{}uds utilisant ce client allégé se reposent sur la procédure \textit{Simplified Payment Verification}, décrite dès le papier fondateur. Dans la suite, nous décrivons le modèle utilisé par \textit{bitcoinj}.\\\\
 Cette procédure simplifiée repose sur les n\oe{}uds mettant en \oe{}uvre la totalité du protocole (i.e. ayant en mémoire la totalité de la chaîne). Si le client bitcoinj se connecte à l'un d'entre eux, il ne sera informé d'une transaction que si celle-ci est jugée valide par ce n\oe{}ud. Une fois cette transaction incorporée dans un nouveau bloc (ce que le client bitcoinj peut vérifier s'il récupère ce bloc et contrôle sa validité), la profondeur de cette transaction dans la chaîne passe à 1, et le client bitcoinj ne récupère plus que les \textit{headers} des blocs suivants (qui à chaque fois contiennent une référence au bloc précédent), augmentant à chaque fois la profondeur de la transaction qui l'intéresse de 1. Il considère la transaction comme sûre une fois qu'elle est à une profondeur suffisante dans la chaîne (la valeur typiquement retenue étant de 6), c'est à dire une fois qu'il estime suffisamment peu probable que cette branche de la chaîne ne soit pas la branche finalement retenue.\\\\
