@@ -33,7 +33,7 @@ Rapport de projet INFRES357
  
 \newpage
 
-\section{Le protocole Bitcoin}
+\section{Les transactions Bitcoin}
 
 \subsection{Briques de base}
 
@@ -326,7 +326,7 @@ Les blocs de transactions sont créés par les mineurs et ont la structure suiva
 
 \item Header:
 \begin{itemize}
-\item h(block précédent)
+\item h(bloc précédent)
 \item h(Body)
 \item timestamp
 \item target (nombre)
@@ -345,9 +345,33 @@ Les blocs de transactions sont créés par les mineurs et ont la structure suiva
 
 \end{itemize}
 
-\caption{Transaction $Tx$}
+\caption{Un bloc de transaction}
 \end{figure}
 
+Un mineur souhaitant créer un bloc va donc récupérer des transactions sur le réseau peer-to-peer, vérifier qu'elles sont valides avec la blockchain actuelle et les ajouter dans le body du bloc. Il pointe sur le bloc le plus récent de la blockchain avec h(bloc précédent). Mais pour que son bloc soit valide il doit à présent résoudre un challenge : il doit trouver un nonce tel que $h(Header)<target$. Or le seul moyen de trouver un tel nonce est d'essayer une multitude de nonces possibles à la suite. Cela demande une très grande puissance de calcul. S'il parvient à résoudre ce problème, le mineur peut donc diffuser le bloc, il est rémunéré par une transaction particulière qu'il introduit avant les transactions qu'il récolte. C'est la coinbase transaction. Elle donne 25 btc à l'adresse que le mineur a choisie.
+
+\subsubsection{Règle de lecture de la Blockchain}
+
+Comme on le voit sur la figure 7, il est possible que dans la blockchain plusieurs blocs pointent sur le même bloc. Il y a alors plusieurs branches possibles. La branche qui détermine les transactions valides à un instant t est la branche la plus longue en partant de la racine (la branche en noir sur la figure 7).
+
+\subsection{Compétition entre les mineurs}
+
+La difficulté est réglée pour qu'un bloc soit miné environ toutes les 10 minutes. Dès qu'un nouveau bloc est miné, les mineurs entrent donc en compétition pour miner le prochain bloc. Ils constituent chacun un bloc avec des transactions valides et cherchent à trouver un nonce valide. Le premier qui trouve un nonce valide diffuse son bloc sur le réseau et il est ajouté à la blockchain. Les mineurs sont donc en compétition pour miner les blocs. Le seul moyen pour un mineur d'être payé est d'intégrer un bloc qu'il a miné dans la blockchain. Autrement toutes ses dépenses (matériels informatiques de calcul rapide, électricité, ...) sont faites à perte.
+
+\subsubsection{Hashrate}
+
+On appelle hashrate le nombre de tentative de nonce que peut faire un mineur en une seconde. Plus son hashrate est élevé plus un mineur a de chances de miner un bloc. Plus précisément, à chaque seconde la probabilité pour un mineur de miner un bloc est égale au ratio de son hashrate sur le hashrate total (ie le hasrate cumulé de tous les mineurs).
+
+\subsubsection{Fork}
+
+On parle de fork lorsque dans la blockchain deux branches partent du même bloc. Sur la figure 7 il y a plusieurs fork. Une fork peut se produire par exemple lorsque deux mineurs minent un bloc à peu près en même temps. La probabilité est assez faible mais cela arrive de temps en temps. Cela crée donc deux branches. Une partie des mineurs va décider de miner sur la branche 1 (donc ils cherchent un bloc qui pointe sur cette branche) et l'autre partie va décider de miner sur la branche 2. Supposons par exemple que le hashrate soit plus important sur la branche 1. La branche 1 va donc avancer plus vite que le branche 2, et comme le hashrate de la branche 1 est supérieur il est certain qu'elle finira forcément par être plus longue que la branche 2. Il est donc peu rentable de miner des blocs sur la branche 2 puisque ceux-ci ne seront sûrement jamais dans la branche principale de la blockchain. C'est pourquoi très vite les mineurs de la branche 2 vont basculer sur la branche 1. La branche 2 va donc être abandonnée.
+
+\subsubsection{Attaque des $51\%$}
+
+Si un mineur possède plus de $51\%$ du hashrate total il peut alors décider de créer un branche qui part de n'importe où dans la blockchain et miner dessus jusqu'à ce que cette branche devienne la plus longue. Comme il possède plus de la moitié du hashrate total il est certain que cette branche finira par devenir la plus longue. Ce mineur peut donc réécrire l'historique des transactions comme il l'entend. Dans ce cas là Bitcoin devient centralisé et c'est ce mineur qui décide quelles transactions sont acceptées ou non, avec possibilité de revenir en arrière. Il est tout puissant. Cela signifie donc la mort de Bitcoin.
+
+
+\subsection{Impossibilité du double-spend}
 
 
 \section{Les différents types de clients}
