@@ -33,6 +33,10 @@ Rapport de projet INFRES357
  
 \newpage
 
+\section*{Introduction}
+
+Bitcoin a fait beaucoup l'actualité durant ces deux dernières années mais la seule lecture d'articles de presse ne permet ni de comprendre de quoi il s'agit ni comment cela fonctionne. En effet bien que n'utilisant que des techniques cryptographiques connues depuis assez longtemps, Bitcoin repose sur une architecture assez complexe. Le but de ce rapport est de donner une idée assez précise du fonctionnement général de Bitcoin. On n'entrera pas dans le détail des implémentations (en particulier on ne discutera pas des fonctions cryptographiques utilisées) mais on s'intéressera plutôt à l'architecture de Bitcoin. Les sections 1 et 2 expliquent le protocole en lui-même, tandis que les sections 3 et 4 s'intéressent à l'écosystème qui doit être mis en place autour du protocole afin de le rendre utilisable, et les problématiques de sécurité associées.
+
 \section{Les transactions Bitcoin}
 
 \subsection{Briques de base}
@@ -373,6 +377,57 @@ Si un mineur possède plus de $51\%$ du hashrate total il peut alors décider de
 
 \subsection{Impossibilité du double-spend}
 
+Un des buts principaux de la blockchain est que le double-spend soit impossible. Prenons un exemple, il y a dans la blockchain une transaction $Tx$ qui donne 1 btc à l'adresse $adr_B$ de Bob. Bob va essayer d'utiliser deux fois cet output. Il crée donc les transactions $Tx1$ et $Tx2$ suivantes :
+
+\begin{figure}[H]
+\begin{itemize}
+\renewcommand{\labelitemi}{$\bullet$}
+\renewcommand{\labelitemii}{$\star$}
+
+\item Input
+\begin{itemize}
+\item $h(Tx)$
+\item $K_{Pub}^{B}$
+\item[$\bullet$] $signature(K_{Pri}^{B}, Tx1^*)$
+\end{itemize}
+
+\item Output
+\begin{itemize}
+\item value : 1 btc
+\item $adr_A$
+\end{itemize}
+
+\end{itemize}
+
+\caption{Transaction $Tx1$}
+\end{figure}
+
+
+
+\begin{figure}[H]
+\begin{itemize}
+\renewcommand{\labelitemi}{$\bullet$}
+\renewcommand{\labelitemii}{$\star$}
+
+\item Input
+\begin{itemize}
+\item $h(Tx)$
+\item $K_{Pub}^{B}$
+\item[$\bullet$] $signature(K_{Pri}^{B}, Tx2^*)$
+\end{itemize}
+
+\item Output
+\begin{itemize}
+\item value : 1 btc
+\item $adr_E$
+\end{itemize}
+
+\end{itemize}
+
+\caption{Transaction $Tx2$}
+\end{figure}
+
+La transaction $Tx1$ envoie 1 btc à l'adresse de Alice et la transaction $Tx2$ 1 btc à l'adresse d'Eve. Bob diffuse ces deux transactions sur le réseau. Chacune des transaction est valide séparément cependant elles ne peuvent pas être valides en même temps car elle utilisent le même output. Elles ne peuvent donc pas se trouver dans le même bloc ou dans la même branche. Par conséquent les mineurs qui essaient de miner un nouveau bloc vont intégrer dans leur bloc soit $Tx1$ soit $Tx2$ mais pas les deux à la fois. Si le premier bloc à être miné contient $Tx1$ par exemple alors $Tx2$ ne pourra jamais être intégré dans cette branche. Cependant $Tx2$ peut-être intégrée dans une branche parallèle et si cette branche parallèle devient plus longue que la branche de $Tx1$ c'est $Tx2$ qui deviendra valide. Cependant si l'écart entre la branche de $Tx1$ et la plus longue des branches parallèles est plus grand que 6 blocs par exemple alors il est très peu probable que la branche de $Tx1$ soit rattrapée. $Tx1$ restera donc valide, et $Tx2$ non valide. Par conséquent si Alice et Eve attendent assez longtemps (de l'ordre de 6 blocs par exemple) elles sauront pratiquement à coup sûr quelle transaction est valide. Le double-spend n'est donc pas possible du moment que l'on attend quelques blocs avant de considérer un paiement comme valide.
 
 \section{Les différents types de clients}
 \subsection{Découpage des fonctions}
