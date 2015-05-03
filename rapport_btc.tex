@@ -294,7 +294,60 @@ Pour chaque input dans $Tx$ il faut fournir la clef publique associée à l'adre
 
 
 \section{La Blockchain et les mineurs}
+
+Jusqu'à présent nous avons considéré qu'il existait un livre de compte partagé entre tous les utilisateurs de Bitcoin et que ce livre de compte contenait à chaque instant t toutes les transactions acceptées. Bien sûr c'était une vision théorique. Cependant une des principales innovations de Bitcoin est d'avoir réussi à s'approcher assez près de ce livre de compte théorique avec la "Blockchain". 
+
+\subsection{Réseau Bitcoin et acteurs}
+
+Le réseau Bitcoin est un réseau peer-to-peer. Tous les utilisateurs sont connectés à ce réseau peer-to-peer. Bob et Alice de la partie précédente ne sont donc pas nécessairement directement connectés l'un à l'autre mais il existe sur le réseau peer-to-peer au moins un chemin d'utilisateurs connectés entre eux qui les relient. Toutes les informations sont transmises par ce réseau peer-to-peer, les transactions aussi bien que les mises à jour de la blockchain (les blocs définis par la suite).\\\\
+Enfin il existe en plus des utilisateurs standards un autre type d'acteurs dans le protocoles : les mineurs. Les mineurs participent à la mise à jour de la blockchain, en y intégrant de nouvelles transactions et sont rémunérés par le protocoles pour cela.
+
+
+
 \subsection{Structure de la Blockchain}
+
+La blockchain est une structure arborescente composée de blocs de transactions. Il existe une racine, qui est le premier bloc à avoir été émis (en vert sur la figure 7). Puis d'autres blocs de transactions sont ajoutés. Chaque bloc pointe sur un bloc existant avant lui, d'où la structure arborescente.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=1]{blockchain.png}
+\caption{La Blockchain à ses débuts}
+\end{center}
+\end{figure}
+
+\subsubsection{Structure d'un bloc}
+
+Les blocs de transactions sont créés par les mineurs et ont la structure suivante.
+
+\begin{figure}[H]
+\begin{itemize}
+\renewcommand{\labelitemi}{$\bullet$}
+\renewcommand{\labelitemii}{$\star$}
+
+\item Header:
+\begin{itemize}
+\item h(block précédent)
+\item h(Body)
+\item timestamp
+\item target (nombre)
+\item nonce (nombre) 
+\item[ ]
+\end{itemize}
+
+\item Body:
+\begin{itemize}
+\item Coinbase $Tx$
+\item $Tx1$
+\item $Tx2$
+\item $\ldots$
+\item $Txn$
+\end{itemize}
+
+\end{itemize}
+
+\caption{Transaction $Tx$}
+\end{figure}
+
 
 
 \section{Les différents types de clients}
