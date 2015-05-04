@@ -216,15 +216,17 @@ Cette fois-ci Eve veut essayer de changer le montant de la transaction, le rempl
 \section{Le minage}
 \subsection{La parade au double-spend}
 
-\section{Les différents types de clients}
-\subsection{Découpage des fonctions}
+\section{Au delà du protocole : ses implémentations}
+\subsection{Le découpage des fonctions}
 Avec ce qu'on a vu auparavant, on peut déclarer que le protocole Bitcoin est sûr pourvu que :\begin{itemize}
 	\item les clefs secrètes restent secrètes
-	\item on a accès au consensus atteint par le réseau, c'est-à-dire à la \textit{blockchain}
+	\item on a accès au consensus atteint par le réseau, c'est-à-dire à la \textit{blockchain}\\
 \end{itemize}
-Ces deux conditions sont malheureusement assez antagonistes : l'accès à la \textit{blockchain} suppose une connectivité avec l'extérieur, ce qui est nécessairement un facteur de risque pour la sécurité des clefs.\\\\
+Tout d'abord, il convient de noter que l'accès à la \textit{blockchain} est un processus assez lourd : actuellement\footnote{avril 2015}, l'ensemble de la \textit{blockchain} représente 30 Go ; de plus, par construction un nouveau bloc est ajouté toutes les 10 minutes environ, ce qui suppose une connexion permanente, et des calculs fréquents pour déterminer la validité d'un nouveau bloc. On voit que cette vision extensive de la \textit{blockchain} est difficilement compatible avec les capacités par exemple d'un téléphone portable, alors que c'est assez précisément le type d'appareil qui pourrait remplacer notre portefeuille physique.\\\\ 
+De plus, les deux conditions indiquées ci-dessus sont malheureusement assez antagonistes : l'accès à la \textit{blockchain} suppose une connectivité avec l'extérieur, ce qui est nécessairement un facteur de risque pour la sécurité des clefs.\\\\
 Cependant, l'architecture de Bitcoin rend possible de séparer les différentes fonctions d'un portefeuille, et en particulier d'isoler la partie signature. De façon intéressante, cette séparation peut même se faire entre différents acteurs, le détenteur d'une adresse délégant une partie de l'ensemble des fonctions d'un portefeuille Bitcoin à une autre entité.\\\\
 Dans cette section, nous exposons les différents types de clients Bitcoin qui existent à ce jour (en nous référant à des implémentations existantes) et proposons une première analyse de leurs avantages (en termes de simplicité ou de légèreté) et des changements, en bien ou en mal, qu'ils induisent en termes de sécurité.
+\subsection{Les différents types de clients}
 \subsection{Full clients}
 \begin{figure}[h]
 	\centering
